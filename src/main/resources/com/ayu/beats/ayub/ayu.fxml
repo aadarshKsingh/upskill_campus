@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="908.0" stylesheets="@style.css" AnchorPane.topAnchor="0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ayu.beats.ayub.MainController">
+   <children>
+      <ToolBar layoutX="750.0" layoutY="9.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="37.0" prefWidth="150.0" style="-fx-background-color: transparent;">
+        <items>
+            <Button id="min" layoutY="10.0" mnemonicParsing="false" onAction="#minimizeApp" prefHeight="18.0" prefWidth="80.0" style="-fx-text-fill: #9CA3AF; -fx-background-color: transparent;" text="Minimize" />
+          <Button id="exit" mnemonicParsing="false" onAction="#exitApp" prefHeight="18.0" prefWidth="50.0" style="-fx-text-fill: #9CA3AF; -fx-background-color: transparent;" text="Exit" />
+        </items>
+      </ToolBar>
+      <TextFlow layoutX="10.0" layoutY="5.0" prefHeight="18.0" prefWidth="694.0">
+         <children>
+            <Text fill="#9ca3af" fontSmoothingType="LCD" lineSpacing="5.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rickroll" text="AYU Beats" textAlignment="CENTER" wrappingWidth="80.13800811767578">
+               <font>
+                  <Font name="Overpass SemiBold" size="17.0" />
+               </font>
+            </Text>
+            <Button id="settings" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#initializeList" prefHeight="18.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="⚙️" textAlignment="CENTER" textFill="#bfbdbd">
+               <padding>
+                  <Insets left="30.0" />
+               </padding>
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="eq" onMouseClicked="#showEqualizer" mnemonicParsing="false" style="-fx-background-color: transparent;" text="🎚️" textAlignment="CENTER" textFill="#cdcaca">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </TextFlow>
+      <SplitPane dividerPositions="0.5" layoutX="7.0" layoutY="41.0" prefHeight="528.0" prefWidth="893.0" style="-fx-background-color: #1F2937;" stylesheets="@style.css">
+         <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="529.0">
+               <children>
+                  <Pane layoutX="169.0" layoutY="62.0" prefHeight="194.0" prefWidth="194.0" style="-fx-background-color: #D1D5DB; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 30, 0, 2, 2); -fx-background-radius: 3;">
+                     <children>
+                        <ImageView fx:id="cover" fitHeight="194.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/nocover.jpg" />
+                           </image></ImageView>
+                     </children></Pane>
+                  <ProgressBar fx:id="seekbar" focusTraversable="false" layoutX="73.0" layoutY="350.0" prefHeight="10.0" prefWidth="387.0" scaleShape="false" style="-fx-background-radius: 10; -fx-background-color: #1F2937 -fx-color ;">
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
+                     <effect>
+                        <MotionBlur angle="96.28" radius="0.0">
+                           <input>
+                              <Blend />
+                           </input>
+                        </MotionBlur>
+                     </effect>
+                  </ProgressBar>
+                  <ButtonBar layoutX="110.0" layoutY="375.0" prefHeight="40.0" prefWidth="263.0" style="-fx-background-color: transparent;">
+                    <buttons>
+                      <Button id="previous" minWidth="52.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏮️" textFill="#d1d5db">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="play" minWidth="42.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="▶️" textFill="#d1d5db">
+                           <font>
+                              <Font name="AUSTRALIA TITLE" size="26.0" />
+                           </font>
+                        </Button>
+                        <Button id="next" minWidth="21.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏭️" textFill="#d1d5db">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Button>
+                    </buttons>
+                  </ButtonBar>
+                  <VBox alignment="CENTER" layoutX="70.0" layoutY="270.0" minWidth="400.0" prefWidth="100.0">
+                     <children>
+                        <Text fx:id="trackName" fill="#d1d5db" strokeType="OUTSIDE" strokeWidth="0.0" text="Track Name" textAlignment="CENTER">
+                           <font>
+                              <Font name="Overpass Regular" size="22.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="artistName" fill="#d1d5db" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name" textAlignment="CENTER" wrappingWidth="400.0">
+                           <font>
+                              <Font name="Open Sans Light" size="19.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </VBox>
+                  <Button id="loop" layoutX="92.0" layoutY="383.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="🔁" textFill="#a3a3a4fc">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Button>
+                  <Text fx:id="startTime" fill="WHITE" layoutX="37.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00" />
+                  <Text fx:id="endTime" fill="WHITE" layoutX="467.0" layoutY="360.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0:00" />
+               </children>
+            </AnchorPane>
+          <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="528.0" prefWidth="370.0" style="-fx-background-color: #1F2937;">
+               <children>
+                  <TabPane layoutX="-6.0" prefHeight="528.0" prefWidth="376.0">
+                     <tabs>
+                        <Tab closable="false" text="Songs">
+                           <content>
+                              <ListView fx:id="songsList" prefHeight="514.0" prefWidth="200.0" stylesheets="@style.css" />
+                           </content>
+                        </Tab>
+                         <Tab closable="false" text="Playlists">
+                           <content>
+                                   <ListView stylesheets="@style.css" />
+                           </content>
+                         </Tab>
+                     </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
