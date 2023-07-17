@@ -11,6 +11,8 @@ import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
+import static com.ayu.beats.ayub.MainController.*;
+
 
 public class Player  extends  MediaPlayerEventAdapter{
     public static EmbeddedMediaPlayer mediaPlayer;
@@ -65,7 +67,6 @@ public class Player  extends  MediaPlayerEventAdapter{
 
 class PlayerListener extends MediaPlayerEventAdapter{
 //    private final Text startTime;
-
 
 
     @Override

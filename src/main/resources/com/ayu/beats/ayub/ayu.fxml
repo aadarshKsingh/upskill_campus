@@ -63,7 +63,7 @@
                   </ProgressBar>
                   <ButtonBar layoutX="110.0" layoutY="375.0" prefHeight="40.0" prefWidth="263.0" style="-fx-background-color: transparent;">
                     <buttons>
-                      <Button id="previous" minWidth="52.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏮️" textFill="#d1d5db">
+                      <Button fx:id="previous" minWidth="52.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏮️" textFill="#d1d5db">
                            <font>
                               <Font size="19.0" />
                            </font>
@@ -73,7 +73,7 @@
                               <Font name="AUSTRALIA TITLE" size="26.0" />
                            </font>
                         </Button>
-                        <Button id="next" minWidth="21.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏭️" textFill="#d1d5db">
+                        <Button fx:id="next" minWidth="21.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="88.0" style="-fx-background-color: transparent;" text="⏭️" textFill="#d1d5db">
                            <font>
                               <Font size="19.0" />
                            </font>
@@ -94,7 +94,7 @@
                         </Text>
                      </children>
                   </VBox>
-                  <Button id="loop" layoutX="92.0" layoutY="383.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="🔁" textFill="#a3a3a4fc">
+                  <Button fx:id="loop" layoutX="92.0" layoutY="383.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="🔁" textFill="#a3a3a4fc">
                      <font>
                         <Font size="17.0" />
                      </font>

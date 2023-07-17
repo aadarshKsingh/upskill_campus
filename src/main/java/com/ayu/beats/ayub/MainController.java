@@ -38,6 +38,9 @@ public class MainController {
     public Text startTime ;
     public Player player;
     public Button eq;
+    public Button next;
+    public Button previous;
+    public Button loop;
     String path = "";
 
     @FXML
@@ -55,8 +58,12 @@ public class MainController {
 
     @FXML
     private ListView<Song> songsList;
-    private List<File> audioFiles;
+    private static List<File> audioFiles;
+    public static int currentIndex = 0;
+    public static int totalIndex = 0;
 
+    public static int flag = 0;
+    private boolean loopState = false;
     public void initializeList()  {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -64,10 +71,10 @@ public class MainController {
         } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
             path =  System.getProperty("user.home") + "/Music/";
         }
-        MainController mainController = Main.getController();
+
         audioFiles = FetchFiles.fetchAudioFiles(new File(path));
         ObservableList<Song> listData = FXCollections.observableArrayList();
-
+        totalIndex = audioFiles.size();
         ScrollPane mDpane = new ScrollPane();
         mDpane.setPrefWidth(400);
         mDpane.setPrefHeight(800);
@@ -88,36 +95,25 @@ public class MainController {
             if (setterEvent.getButton().toString().equals("PRIMARY")) {
                 String selectedItem ;
                 selectedItem = String.valueOf(songsList.getSelectionModel().getSelectedItem().title());
-                path+=selectedItem;
+                String songPath=path+selectedItem;
+                currentIndex = songsList.getSelectionModel().getSelectedIndex();
 
 
-                System.out.println(path);
+//                System.out.println(path);
 
-                metaData = Metadata.getMetadata(path);
 
-                String title = metaData.get("title");
-                String artist = metaData.get("artist");
-                String duration = metaData.get("duration");
-                System.out.println(title);
-                System.out.println(artist);
-                System.out.println(duration);
-                trackName.setText(title);
-                artistName.setText(artist);
-                endTime.setText(duration);
-                String coverPath = metaData.get("cover");
-
-                if(coverPath!=null){
-                    byte[] imageBytes = Base64.getDecoder().decode(coverPath);
-                    ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-                    cover.setImage(new Image(bais));
-                    cover.setSmooth(true);
-                }
+                updateMetadata(songPath);
                     player = new Player();
-                    player.play(path);
+                    if(flag == 1 )
+                            Player.mediaPlayer.controls().setPause(true);
+                    player.play(songPath);
+                    flag = 1;
                     play.setText("⏸");
 
             }
         });
+
+
 
         seekbar.setOnMouseDragged(this::handleSeekBar);
         seekbar.setOnMousePressed(this::handleSeekBar);
@@ -173,7 +169,34 @@ public class MainController {
 
         });
 
-        //pause play listener
+
+        //next button handler
+        next.setOnMouseClicked((event)->{
+            Player.mediaPlayer.controls().setPosition(0);
+            if(currentIndex!=totalIndex-1){
+                currentIndex++;
+            }else {
+                currentIndex = (currentIndex+1)%totalIndex;
+            }
+            updateMetadata(audioFiles.get(currentIndex).getPath());
+            Player.mediaPlayer.media().play(audioFiles.get(currentIndex).getPath());
+
+        });
+
+        //previous button handler
+        previous.setOnMouseClicked((event)->{
+            Player.mediaPlayer.controls().setPosition(0);
+            if(currentIndex!=0){
+                currentIndex--;
+            }else {
+                currentIndex = totalIndex-1;
+            }
+            updateMetadata(audioFiles.get(currentIndex).getPath());
+            Player.mediaPlayer.media().play(audioFiles.get(currentIndex).getPath());
+
+        });
+
+        //pause play handler
         play.setOnMouseClicked((event -> {
             Player.pausePlay();
             if(Player.getStatus().equals("playing"))
@@ -181,6 +204,47 @@ public class MainController {
             else
                 play.setText("⏸");
         }));
+
+        loop.setOnMouseClicked((event -> {
+            if(!loopState){
+                loopState = true;
+                loop.setStyle("-fx-text-fill:red;-fx-background-color:#1F2937;");
+                Player.mediaPlayer.controls().setRepeat(true);
+            }else{
+                loopState = false;
+                loop.setStyle("-fx-text-fill:white;-fx-background-color:#1F2937;");
+                Player.mediaPlayer.controls().setRepeat(false);
+            }
+        }));
+
+    }
+
+    public static void nextTrack(){
+      MainController main = new MainController();
+      main.next.fire();
+    }
+
+
+    public void updateMetadata(String path){
+        metaData = Metadata.getMetadata(path);
+
+        String title = metaData.get("title");
+        String artist = metaData.get("artist");
+        String duration = metaData.get("duration");
+        System.out.println(title);
+        System.out.println(artist);
+        System.out.println(duration);
+        trackName.setText(title);
+        artistName.setText(artist);
+        endTime.setText(duration);
+        String coverPath = metaData.get("cover");
+
+        if(coverPath!=null){
+            byte[] imageBytes = Base64.getDecoder().decode(coverPath);
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            cover.setImage(new Image(bais));
+            cover.setSmooth(true);
+        }
 
     }
 
