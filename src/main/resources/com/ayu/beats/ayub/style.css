@@ -98,14 +98,3 @@
     -fx-background-color: red;
     }
 
-#songsList .scroll-bar {
-    -fx-background-color: #f0f0f0; /* Background color */
-}
-
-#songsList .scroll-bar-thumb {
-    -fx-background-color: #888888; /* Thumb color */
-}
-
-#songsList .scroll-bar-track {
-    -fx-background-color: #d0d0d0; /* Track color */
-}
