@@ -26,7 +26,7 @@
 }
 
 .list-view{
-   /* -fx-background-color: #1F2937;*/
+    -fx-background-color: #1F2937;
     -fx-text-fill: #e6eaf1;
     -fx-background-color: white;
     -fx-background-radius: 10px;
@@ -48,11 +48,11 @@
 .tab-label {    /* label text don't touch */
     -fx-text-fill: #F8F8FF;
 }
-/*
+
 .tab{
     -fx-alignment: CENTER;
      -fx-background-color: black;
-}*/
+}
 .tab:selected{
     -fx-border-width: 2px;
     -fx-border-color: red;
@@ -81,12 +81,12 @@
 }
 
 .tab {
-    -fx-padding: 0 50;
+   -fx-padding: 0 50;
     -fx-alignment: CENTER;
 }
 
 .tab .tab-label {
-    -fx-alignment: CENTER;
+  -fx-alignment: CENTER;
 }
 
 .progress-bar {
@@ -98,3 +98,32 @@
     -fx-background-color: red;
     }
 
+
+
+.titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-image: url('/images/folder.png');
+    -fx-background-position: center;
+
+}
+.titled-pane {
+    -fx-border-color: #314158;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-color: #314158;
+    -fx-text-fill: white;
+
+}
+
+.titled-pane > .title {
+    -fx-background-color: #314158;
+    -fx-padding: 10px;
+}
+
+.titled-pane > .title > .arrow-button {
+    -fx-background-image: url('/images/folder.png');
+}
+
+.titled-pane > .content {
+    -fx-padding: 10px;
+    -fx-text-fill:white;
+}

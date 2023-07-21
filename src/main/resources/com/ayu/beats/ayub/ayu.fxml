@@ -23,7 +23,7 @@
                   <Font name="Overpass SemiBold" size="17.0" />
                </font>
             </Text>
-            <Button id="settings" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#initializePlaylist" prefHeight="18.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="⚙️" textAlignment="CENTER" textFill="#bfbdbd">
+            <Button id="settings" minWidth="-Infinity" mnemonicParsing="false"  prefHeight="18.0" prefWidth="74.0" style="-fx-background-color: transparent;" text="⚙️" textAlignment="CENTER" textFill="#bfbdbd">
                <padding>
                   <Insets left="30.0" />
                </padding>

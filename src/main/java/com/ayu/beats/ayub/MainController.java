@@ -19,6 +19,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -60,16 +62,20 @@ public class MainController {
     @FXML
     private ListView<Song> songsList;
     @FXML
-    private ListView<String> playLists;
+    private ListView<TitledPane> playLists;
     private static List<File> audioFiles;
-    private static List<String> playlistFiles;
+    private static ObservableList<String> playlistFiles;
     public static int currentIndex = 0;
     public static int totalIndex = 0;
+
+    public static int playlistIndex = 0;
+    public static int totalPlaylistIndex = 0;
     public static Map<String,List<File>> playlist = new HashMap<>();
 
 
     public static int flag = 0;
     private boolean loopState = false;
+
     public void initializeList()  {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -80,7 +86,7 @@ public class MainController {
 
         audioFiles = FetchFiles.fetchAudioFiles(new File(path));
         playlistFiles = initializePlaylist();
-        ObservableList<String> playlistData = FXCollections.observableArrayList();
+        ObservableList<TitledPane> playlistData = FXCollections.observableArrayList();
         ObservableList<Song> listData = FXCollections.observableArrayList();
         totalIndex = audioFiles.size();
         ScrollPane mDpane = new ScrollPane();
@@ -93,14 +99,34 @@ public class MainController {
             Song song = new Song(name);
             listData.add(i, song);
         }
+
         for (int i = 0; i < playlistFiles.size(); i++) {
-            String name = playlistFiles.get(i);
-            playlistData.add(name);
+            String name = String.valueOf(playlistFiles.get(i));
+            HBox header = new HBox();
+            Label title = new Label(name);
+            title.setStyle("-fx-text-fill:white;-fx-alignment:CENTER;");
+            Button play = new Button("▶");
+            play.setOnMouseClicked((event -> {
+//                Player.pausePlay();
+                runPlaylist(name);
+            }));
+            play.setStyle("-fx-background-color:transparent;-fx-text-fill:red;-fx-alignment:CENTER;");
+            header.setSpacing(50);
+            header.getChildren().addAll(title,play);
+            TitledPane titledPane = new TitledPane(null, getPlaylist(name));
+            titledPane.setGraphic(header);
+            VBox.setVgrow(titledPane, Priority.ALWAYS);
+            titledPane.setCollapsible(true);
+            titledPane.setExpanded(false);
+           playlistData.add(titledPane);
+
         }
 
+        playLists.setItems(playlistData);
+        playLists.refresh();
         songsList.setStyle("-fx-padding-top: 10px;-fx-background-radius:20px;");
         songsList.setItems(listData);
-        playLists.setItems(playlistData);
+
         songsList.setCellFactory(listView -> new CustomSongListItem());
         songsList.setOnMouseClicked(setterEvent -> {
             if (setterEvent.getButton().toString().equals("PRIMARY")) {
@@ -119,7 +145,7 @@ public class MainController {
 
             }
 
-            playLists.setOnMouseClicked((event -> initializePlaylist()));
+            playLists.setOnMouseClicked((event -> playLists.refresh()));
         });
 
         seekbar.setOnMouseDragged(this::handleSeekBar);
@@ -226,18 +252,38 @@ public class MainController {
 
     }
 
+    public void runPlaylist(String name) {
+        player = new Player();
+
+        List<File> playlistContent = new ArrayList<>(); // Initialize the playlistContent list
+        for (int i = 0; i < playlist.get(name).size(); i++) {
+            playlistContent.add(playlist.get(name).get(i));
+        }
+        System.out.println(playlistContent);
+        updateMetadata(playlistContent.get(playlistIndex).getPath());
+
+        player.play(playlistContent.get(playlistIndex).getPath());
+        Player.mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if (playlistIndex != totalPlaylistIndex - 1) {
+                    playlistIndex++;
+                } else {
+                    playlistIndex = (playlistIndex + 1) % totalPlaylistIndex;
+                }
+                runPlaylist(name);
+            }
+        });
+
+    }
+
     public ObservableList<String> initializePlaylist() {
 
             ObservableList<String> playlistName = FXCollections.observableArrayList();
             playlistName.addAll(playlist.keySet());
-            List<String> pl = playlistName.stream().toList();
-            System.out.println(playlistName);
-            System.out.println(playlist);
-            playlistName.add("test playlist");
-//            playLists.setItems(playlistName);
-            System.out.println(playLists);
-            return playlistName;
 
+
+        return playlistName;
     }
 
 
@@ -254,9 +300,6 @@ public class MainController {
         String title = metaData.get("title");
         String artist = metaData.get("artist");
         String duration = metaData.get("duration");
-        System.out.println(title);
-        System.out.println(artist);
-        System.out.println(duration);
         trackName.setText(title);
         artistName.setText(artist);
         endTime.setText(duration);
@@ -269,6 +312,18 @@ public class MainController {
             cover.setSmooth(true);
         }
 
+    }
+
+    public VBox getPlaylist(String playlistName) {
+        VBox plBox = new VBox();
+        if (playlist.get(playlistName) != null) {
+            for (int i = 0; i < playlist.get(playlistName).size(); i++) {
+                Label name = new Label(playlist.get(playlistName).get(i).getName());
+                name.setStyle("-fx-text-fill:white;-fx-padding:5px;");
+                plBox.getChildren().add(name);
+            }
+        }
+        return plBox;
     }
 
 
@@ -300,17 +355,15 @@ class CustomSongListItem extends ListCell<Song> {
     private String title;
     ContextMenu plContext = new ContextMenu();
     MenuItem newPlaylist = new MenuItem("+ New Playlist");
-
     CustomSongListItem(){
-
-        if(playlist != null) {
-            for (int i = 0; i < Objects.requireNonNull(playlist).size(); i++) {
+        plContext.getItems().add(newPlaylist);
+        System.out.println(playlist.keySet());
+            for (int i = 0; i < playlist.size(); i++) {
                 MenuItem option = new MenuItem(playlist.get(i).toString());
                 plContext.getItems().add(i, option);
-            }
         }
 
-        plContext.getItems().add(newPlaylist);
+
         addToPlaylist = new Button("❤");
         addToPlaylist.setStyle("-fx-background-color: transparent;-fx-text-fill:red;");
         addToPlaylist.setOnMouseClicked((event)->{
@@ -346,23 +399,27 @@ class CustomSongListItem extends ListCell<Song> {
                     newPLStage.setScene(PLName);
                     newPLStage.show();
                     cancel.setOnAction(event2 -> {newPLStage.close();});
-                    confirm.setOnAction(event2 -> generatePlayList(event2,tf.getText(),newPLStage));
+                    confirm.setOnAction(event2 -> generatePlayList(event2, tf.getText(), newPLStage));
+
                 });
             }));
         });
     }
 
     private void generatePlayList(Event event,String playlistName,Stage PLStage){
-        if (title.length() != 0 && playlist != null) {
+        if (title.length() != 0 && Main.getController().playlist != null) {
             List<File> files = new ArrayList<>();
             files.add(new File(MainController.path + title));
-            playlist.put(playlistName, files);
+
+            if(playlist.containsKey(playlistName)){
+                playlist.get(playlistName).addAll(files);
+            }
+            else{
+                Main.getController().playlist.put(playlistName, files);
+            }
         }
 
-        ObservableList<Map.Entry<String, List<File>>> observableList = FXCollections.observableArrayList(playlist.entrySet());
-        System.out.println("Playlist : "+playlistName);
-        System.out.println("Path: "+MainController.path+title);
-        System.out.println(observableList);
+
         Main.getController().initializeList();
         PLStage.close();
     }
@@ -377,7 +434,6 @@ class CustomSongListItem extends ListCell<Song> {
             setGraphic(null);
         } else {
             this.title = song.title();
-//            System.out.println(song.title());
             Text title = new Text(song.title());
             title.setFill(Paint.valueOf("#e6eaf1"));
             HBox hbox = new HBox();
@@ -388,7 +444,6 @@ class CustomSongListItem extends ListCell<Song> {
             hbox.setStyle("-fx-background-color: #314158; -fx-background-radius: 5px;-fx-text-fill:#e6eaf1;-fx-margin: 5px;");
             hbox.setPrefWidth(Region.USE_COMPUTED_SIZE);
             HBox.setHgrow(hbox, Priority.ALWAYS);
-
             setGraphic(hbox);
             getStyleClass().add("no-clip");
 
@@ -396,14 +451,6 @@ class CustomSongListItem extends ListCell<Song> {
     }
 
 }
-
-class CustomPlaylistItem extends ListCell<TreeItem<String>>{
-    @Override
-    protected void updateItem(TreeItem<String> item, boolean empty) {
-        super.updateItem(item, empty);
-    }
-}
-
 
 
 
