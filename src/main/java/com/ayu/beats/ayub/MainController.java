@@ -24,6 +24,7 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.ayu.beats.ayub.MainController.playlist;
@@ -107,7 +108,7 @@ public class MainController {
             title.setStyle("-fx-text-fill:white;-fx-alignment:CENTER;");
             Button play = new Button("▶");
             play.setOnMouseClicked((event -> {
-//                Player.pausePlay();
+                Player.pausePlay();
                 runPlaylist(name);
             }));
             play.setStyle("-fx-background-color:transparent;-fx-text-fill:red;-fx-alignment:CENTER;");
@@ -134,7 +135,6 @@ public class MainController {
                 selectedItem = String.valueOf(songsList.getSelectionModel().getSelectedItem().title());
                 String songPath=path+selectedItem;
                 currentIndex = songsList.getSelectionModel().getSelectedIndex();
-
                 updateMetadata(songPath);
                     player = new Player();
                     if(flag == 1 )
@@ -259,7 +259,6 @@ public class MainController {
         for (int i = 0; i < playlist.get(name).size(); i++) {
             playlistContent.add(playlist.get(name).get(i));
         }
-        System.out.println(playlistContent);
         updateMetadata(playlistContent.get(playlistIndex).getPath());
 
         player.play(playlistContent.get(playlistIndex).getPath());
@@ -348,6 +347,9 @@ public class MainController {
         });
     }
 
+    public void openAbout(MouseEvent mouseEvent) throws URISyntaxException {
+        About.showAbout(new Stage());
+    }
 }
 class CustomSongListItem extends ListCell<Song> {
 
@@ -357,7 +359,6 @@ class CustomSongListItem extends ListCell<Song> {
     MenuItem newPlaylist = new MenuItem("+ New Playlist");
     CustomSongListItem(){
         plContext.getItems().add(newPlaylist);
-        System.out.println(playlist.keySet());
             for (int i = 0; i < playlist.size(); i++) {
                 MenuItem option = new MenuItem(playlist.get(i).toString());
                 plContext.getItems().add(i, option);
@@ -370,8 +371,6 @@ class CustomSongListItem extends ListCell<Song> {
             if(event.getButton().toString().equals( "PRIMARY"))
                 plContext.show(addToPlaylist,event.getScreenX(),event.getScreenY());
 
-            System.out.println("Added to playlist");
-            System.out.println("Clicked on: "+title);
             newPlaylist.setOnAction((event1 -> {
                 Platform.runLater(()->{
                     Stage newPLStage = new Stage();
