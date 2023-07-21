@@ -13,7 +13,7 @@
 
 ## About The Project
 
-![Screen Shot](images/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/aadarshKsingh/AYUB/main/src/main/resources/com/ayu/beats/ayub/images/image.jpg)
 
 AYUB is a minimal media player based on ffmpeg and vlcj. It allows users to access and play their favorite media files with ease, can show metadata and allow adding playlists.
 
